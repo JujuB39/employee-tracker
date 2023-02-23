@@ -71,9 +71,10 @@ const addRole = async () => {
             name: "salary",
             message: "Please enter the Salary for the role: "
         }, {
-            type: "input",
+            type: "list",
             name: "department_id",
-            message: "Please provide the department Id for the role:"
+            message: "What department does this role belong to:",
+            choices: res.map(department => department.deptName)
         }
     ])
 
@@ -97,13 +98,15 @@ const addEmployee = async () => {
             name: "lastName",
             message: "Please enter employees Last name: "
         }, {
-            type: "input",
+            type: "list",
             name: "role_id",
-            message: "Please provide the role Id for this employee:"
+            message: "Please provide the role for this employee:",
+            choices: res.map(role => role.title)
         },  {
-            type: "input",
+            type: "list",
             name: "manager",
-            message: "Who is the employees Manager: "
+            message: "Who is the employees Manager: ",
+            choices: res.map(employee => [employee.firstName, employee.lastName])
         }
     ])
 
@@ -115,3 +118,31 @@ const addEmployee = async () => {
         throw new Error(err)
     }
 };
+
+const menuPrompt = async () => {
+    const response = await inquirer.prompt([
+        {
+            type: "list",
+            name: "dashboard",
+            message: "What would you like to do?",
+            choices: ["View all Departments", "View all Roles", "View all Employees", "Add a Department", "Add a Role", "Add an Employee", "Exit"]
+        }
+    ])
+    if (response.dashboard === "View all Departments") {
+        viewAllDepartments()
+    } else if (response.dashboard === "View all Roles") {
+        viewAllRoles()
+    } else if (response.dashboard === "View all Employees") {
+        viewAllEmployees()
+    } else if (response.dashboard === "Add a Department") {
+        addDepartment()
+    } else if (response.dashboard === "Add a Role") {
+        addRole()
+    } else if (response.dashboard === "Add an Employee") {
+        addEmployee()
+    } else {
+        process.exit(0)
+    }
+}
+
+menuPrompt()
